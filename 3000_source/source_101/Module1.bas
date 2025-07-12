@@ -560,7 +560,7 @@ Sub MakeSeqNumber()
 
 End Sub
 
-' 連番生成
+' 連番生成(サブ)
 Function MakeSeqNumberSub(str As String) As String
     Dim ret As String
     Dim ch As String
