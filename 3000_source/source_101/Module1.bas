@@ -205,12 +205,14 @@ Sub ReadCSVFile()
     End If
     fname = fd.SelectedItems(1)
 
-    ' CSVファイルの読み込み(サブ)
+    ' 区切り文字を設定
     If LCase(Right(fname, 4)) = ".tsv" Then
         delim = vbTab
     Else
         delim = ","
     End If
+    
+    ' CSVファイルの読み込み(サブ)
     Call ReadCSVFileSub(fname, ActiveSheet, delim)
 
     ' オブジェクトの解放
@@ -317,7 +319,7 @@ Label_Exit:
 
 End Sub
 
-' CSVファイルの書き込み
+' CSVファイルの書き出し
 Sub WriteCSVFile()
     Dim defaultFileName As String
     Dim fnameVariant As Variant
@@ -357,12 +359,14 @@ Sub WriteCSVFile()
     'End If
     'fname = fd.SelectedItems(1)
 
-    ' CSVファイルの書き出し(サブ)
+    ' 区切り文字を設定
     If LCase(Right(fname, 4)) = ".tsv" Then
         delim = vbTab
     Else
         delim = ","
     End If
+
+    ' CSVファイルの書き出し(サブ)
     Call WriteCSVFileSub(fname, ActiveSheet, delim)
 
     ' オブジェクトの解放
@@ -371,7 +375,7 @@ Sub WriteCSVFile()
 
 End Sub
 
-' CSVファイルの書き込み(サブ)
+' CSVファイルの書き出し(サブ)
 Private Sub WriteCSVFileSub(fname As String, sheet As Worksheet, delim As String)
     Dim stream As Object
     Dim streamNoBom As Object
@@ -410,7 +414,7 @@ Private Sub WriteCSVFileSub(fname As String, sheet As Worksheet, delim As String
     Call stream.WriteText(line, 1)
     lineNo = lineNo + 1
 
-    ' データを書き込む
+    ' データ出力
     lineNo = 1
     row = ROW_DATA_BEGIN
     Do Until Trim(sheet.Cells(row, COL_NO)) = ""
