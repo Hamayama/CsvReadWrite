@@ -1,5 +1,5 @@
 set EXCEL_FILE1=..\CsvReadWrite.xlsm
-set EXPORT_FOLDER1=source_101
+set EXPORT_FOLDER1=source_1XX
 
 pause Excelファイルのマクロのソースをエクスポートします。
 
