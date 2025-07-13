@@ -585,7 +585,7 @@ Private Function MakeSeqNumberSub(str As String) As String
     ' ・一番右の文字が "0" ～ "9" なら "1" ～ "0" に置換する。
     ' ・繰り上がりがあれば左隣りの文字も同様に置換していく。
     ' ・途中に "0" ～ "9" 以外の文字があれば、変換を終了する。
-    ' ・一番左の文字は、それ以上繰り上がりをしない。(桁数を増やさない)
+    ' ・一番左の文字が繰り上がった場合、桁数を増やす。
     ret = ""
     convFlag = True
     For i = Len(str) To 1 Step -1
@@ -603,6 +603,9 @@ Private Function MakeSeqNumberSub(str As String) As String
         End If
         ret = ch & ret
     Next
+    If convFlag = True Then
+        ret = "1" & ret
+    End If
 
     ' 戻り値を返す
     MakeSeqNumberSub = ret
