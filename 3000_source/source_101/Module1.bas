@@ -3,13 +3,21 @@ Option Explicit
 
 ' == CSVファイルの読み書き ==
 
-' 定数
-Const DEFAULT_CSV_FILE_NAME_1 As String = "SampleData.csv"
-Const DEFAULT_CSV_FILE_NAME_2 As String = "SampleData1.csv"
+' ファイル名の定数
+Const DEFAULT_CSV_FILE_NAME_1 As String = "SampleData.csv"  ' (読み込み用)
+Const DEFAULT_CSV_FILE_NAME_2 As String = "SampleData1.csv" ' (書き出し用)
+
+' 文字コードの定数
+Const CHAR_CODE_1 As String = "utf-8"       ' (読み込み用)
+'Const CHAR_CODE_1 As String = "shift_jis"   ' (読み込み用)
+Const CHAR_CODE_2 As String = "utf-8"       ' (書き出し用)
+'Const CHAR_CODE_2 As String = "shift_jis"   ' (書き出し用)
+Const UTF_8_BOM_1 As Boolean = False        ' (読み込み用)(未使用)
+Const UTF_8_BOM_2 As Boolean = False        ' (書き出し用)
 
 ' エラーの定数
-Const READ_ERROR As Long = 1
-Const WRITE_ERROR As Long = 2
+Const READ_ERROR As Long = 1                ' (読み込み用)
+Const WRITE_ERROR As Long = 2               ' (書き出し用)
 
 ' 行の定数
 Const ROW_HEADER As Long = 6
@@ -236,7 +244,7 @@ Private Sub ReadCSVFileSub(fname As String, sheet As Worksheet, delim As String)
 
     ' ファイルのオープン
     Set stream = CreateObject("ADODB.Stream")
-    stream.Charset = "UTF-8"
+    stream.Charset = CHAR_CODE_1
     Call stream.Open
 
     ' ファイルの読み込み
@@ -285,8 +293,8 @@ Private Sub ReadCSVFileSub(fname As String, sheet As Worksheet, delim As String)
 
         ' データを表示
         For i = 0 To headerNum
+            col = COL_DATA_BEGIN + i
             If i <= dataNum Then
-                col = COL_DATA_BEGIN + i
                 sheet.Cells(row, col) = RemoveDoubleQuote(data(i))
             Else
                 sheet.Cells(row, col) = ""
@@ -397,7 +405,7 @@ Private Sub WriteCSVFileSub(fname As String, sheet As Worksheet, delim As String
 
     ' ファイルのオープン
     Set stream = CreateObject("ADODB.Stream")
-    stream.Charset = "UTF-8"
+    stream.Charset = CHAR_CODE_2
     Call stream.Open
 
     ' ワークシートからヘッダ行を読み込む
@@ -445,14 +453,18 @@ Label_Next_1:
     Loop
 
     ' ファイルの保存
-    ' UTF-8のBOMなしに変換する
-    'Call stream.SaveToFile(fpath, 2)        ' 上書き
-    Set streamNoBom = CreateObject("ADODB.Stream")
-    streamNoBom.Type = 1                    ' バイナリモード
-    Call streamNoBom.Open
-    stream.Position = 3                     ' BOMのサイズ
-    stream.CopyTo streamNoBom
-    Call streamNoBom.SaveToFile(fname, 2)   ' 上書き
+    ' UTF-8 の BOM なしのとき
+    If LCase(CHAR_CODE_2) = "utf-8" And UTF_8_BOM_2 = False Then
+        ' BOM なしに変換する
+        Set streamNoBom = CreateObject("ADODB.Stream")
+        streamNoBom.Type = 1                    ' バイナリモード
+        Call streamNoBom.Open
+        stream.Position = 3                     ' BOMのサイズ
+        stream.CopyTo streamNoBom
+        Call streamNoBom.SaveToFile(fname, 2)   ' 上書き
+    Else
+        Call stream.SaveToFile(fname, 2)        ' 上書き
+    End If
 
 Label_Exit:
 
@@ -525,7 +537,7 @@ Private Sub ClearSheetDataSub(sheet As Worksheet)
 End Sub
 
 ' Longに変換(変換エラー時はerrValを返す)
-Function CLngErrVal(val, errVal) As Long
+Private Function CLngErrVal(val, errVal) As Long
 
     On Error GoTo Label_Exit
     CLngErrVal = CLng(val)
@@ -561,7 +573,7 @@ Sub MakeSeqNumber()
 End Sub
 
 ' 連番生成(サブ)
-Function MakeSeqNumberSub(str As String) As String
+Private Function MakeSeqNumberSub(str As String) As String
     Dim ret As String
     Dim ch As String
     Dim chVal As Long
