@@ -260,10 +260,9 @@ Private Sub ReadCSVFileSub(fname As String, sheet As Worksheet, delim As String)
     headerNum = UBound(header)
 
     ' ヘッダを表示
-    row = ROW_HEADER
     For i = 0 To headerNum
         col = COL_DATA_BEGIN + i
-        sheet.Cells(row, col) = RemoveDoubleQuote(header(i))
+        sheet.Cells(ROW_HEADER, col) = RemoveDoubleQuote(header(i))
     Next
 
     ' データの本体を読み込む
@@ -516,7 +515,8 @@ Private Sub ClearSheetDataSub(sheet As Worksheet)
 
     ' 最終列の列番号を取得
     col = COL_DATA_BEGIN
-    colLast = 0
+    'colLast = 0
+    colLast = COL_DATA_BEGIN - 1
     Do Until Trim(sheet.Cells(ROW_HEADER, col)) = ""
         colLast = col
         col = col + 1
@@ -529,7 +529,7 @@ Private Sub ClearSheetDataSub(sheet As Worksheet)
     End If
 
     ' データをクリア(セルの値のみをクリア)
-    If colLast >= COL_DATA_BEGIN And rowLast >= ROW_DATA_BEGIN Then
+    If colLast >= COL_NO And rowLast >= ROW_DATA_BEGIN Then
         Call sheet.Range(sheet.Cells(ROW_DATA_BEGIN, COL_NO), _
                          sheet.Cells(rowLast, colLast)).ClearContents
     End If
