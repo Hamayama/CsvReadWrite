@@ -61,12 +61,6 @@ Private Function RemoveDoubleQuote(str As String) As String
     ' 戻り値の初期化
     ret = ""
 
-    ' 空文字列なら抜ける
-    If str = "" Then
-        RemoveDoubleQuote = ret
-        Exit Function
-    End If
-
     ' 1文字ずつ調べてダブルクォートを削除する
     quoteFlag = False
     For i = 1 To Len(str)
@@ -99,12 +93,6 @@ Private Function AddDoubleQuote(str As String, Optional special As String = "") 
 
     ' 戻り値の初期化
     ret = ""
-
-    ' 空文字列なら抜ける
-    If str = "" Then
-        AddDoubleQuote = ret
-        Exit Function
-    End If
 
     ' 特殊文字チェック
     convFlag = False
